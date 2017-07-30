@@ -1,0 +1,35 @@
+version: '2'
+services:
+    joind-in-api:
+        build: docker/api
+        image: joind-in-api
+        restart: always
+        entrypoint: /bin/sh
+
+    joind-in-nginx:
+        build: docker/nginx
+        image: joind-in-nginx
+        restart: always
+        hostname: joindin.dev
+        depends_on:
+               - joind-in-api
+        ports:
+            - 80:80
+            - 443:443
+        environment:
+            - VIRTUAL_HOST=phpminds.docker
+            - VIRTUAL_PORT=80
+        volumes_from:
+            - joind-in-api
+
+    joind-in-php:
+        build: docker/php
+        image: joind-in-php:php71
+        restart: always
+        environment:
+            PHP_XDEBUG_ENABLED: 1 # Set 1 to enable.
+            XDEBUG_CONFIG: remote_host=${HOST_IP}
+        volumes_from:
+            - joind-in-api
+
+    
