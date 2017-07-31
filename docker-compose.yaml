@@ -32,4 +32,10 @@ services:
         volumes_from:
             - joind-in-api
 
-    
+    joind-in-composer:
+          restart: 'no'
+          image: composer/composer:php7
+          command: update
+          working_dir: /srv
+          volumes_from:
+            - joind-in-api
